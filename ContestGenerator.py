@@ -24,13 +24,15 @@ def GetResp(url, headers=None, params=None):
 
 def GenerateTemplate(problem_count, args):
     template_file = None
+    template_suffix = None
     if args.language == 'c++17':
         template_file = 'template_cpp17.cc'
+        template_suffix = 'cc'
     else:
         print('Unsupportted language')
         return 
     for index in range(problem_count):
-        call(['cp', template_file, '%s/%s.cc' % (args.contest, str(chr(ord('A') + index)))])
+        call(['cp', template_file, '%s/%s.%s' % (args.contest, str(chr(ord('A') + index)), template_suffix)])
     print("Successfully generate templates")
 
 def GenerateSampleTests(problem_count, args):
