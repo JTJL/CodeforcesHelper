@@ -16,11 +16,14 @@ from subprocess import call
 from bs4 import BeautifulSoup
 
 def GetResp(url, headers=None, params=None):
-    resp = requests.get(url, timeout=10.0, headers=headers, params=params)
-    if resp.status_code == 200:
-        return resp
-    else:
-        print('Get Http Error %d when request url [%s]', resp.status_code, url)
+    try:
+        resp = requests.get(url, timeout=10.0, headers=headers, params=params)
+        if resp.status_code == 200:
+            return resp
+        else:
+            print('Get Http Error %d when request url [%s]', resp.status_code, url)
+    except:
+        print('Get Unknown Http Error')
 
 def GenerateTemplate(problem_count, args):
     template_file = None
