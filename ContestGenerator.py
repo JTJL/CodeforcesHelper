@@ -29,10 +29,10 @@ def GenerateTemplate(problem_count, args):
     template_file = None
     template_suffix = None
     if args.language == 'c++17':
-        template_file = 'template_cpp17.cc'
+        template_file = 'template/template_cpp17.cc'
         template_suffix = 'cc'
     else:
-        print('Unsupportted language')
+        print('Unsupported language')
         return 
     for index in range(problem_count):
         call(['cp', '-u', template_file, '%s/%s.%s' % (args.contest, str(chr(ord('A') + index)), template_suffix)])
