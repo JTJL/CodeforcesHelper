@@ -78,7 +78,13 @@ def Generate(args):
     GenerateTemplate(problem_count, args)
     GenerateSampleTests(problem_count, args)
 
+def PrintVersion():
+    ver = open("version", "r")
+    print(ver.read())
+    ver.close()
+
 if __name__ == '__main__':
+    PrintVersion()
     parser = argparse.ArgumentParser(prog='Codeforces', description='Codeforces Helper')
 
     parser.add_argument('--language', '-l', default="c++17", help='The programming language you want to use.')
