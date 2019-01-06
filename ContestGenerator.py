@@ -38,6 +38,14 @@ def GenerateTemplate(problem_count, args):
         call(['cp', '-u', template_file, '%s/%s.%s' % (args.contest, str(chr(ord('A') + index)), template_suffix)])
     print("Successfully generate templates")
 
+def ParseTests(s):
+    s = str(s)[5:-6].replace('<br/>', '\n')
+    if s[0] == '\n':
+        s = s[1:]
+    if s[-1] != '\n':
+        s = s + '\n'
+    return s
+
 def GenerateSampleTests(problem_count, args):
     for index in range(problem_count):
         problem_url = "https://codeforces.com/contest/%s/problem/%s" % (args.contest, str(chr(ord('A') + index)))
@@ -48,8 +56,8 @@ def GenerateSampleTests(problem_count, args):
         soup = BeautifulSoup(problem.text, 'html.parser')
         tests = soup.find(class_='sample-test').find_all('pre')
         for u in range(0, len(tests), 2):
-            input = tests[u].text[1:]
-            output = tests[u + 1].text[1:]
+            input = ParseTests(tests[u])
+            output = ParseTests(tests[u + 1])
             input_file = open("%s/%s%d.in" % (args.contest, str(chr(ord('a') + index)), u / 2 + 1), "w")
             output_file = open("%s/%s%d.out" % (args.contest, str(chr(ord('a') + index)), u / 2 + 1), "w")
             input_file.write(input)
