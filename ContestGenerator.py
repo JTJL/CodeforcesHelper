@@ -35,7 +35,7 @@ def GenerateTemplate(problem_count, args):
         print('Unsupportted language')
         return 
     for index in range(problem_count):
-        call(['cp', template_file, '%s/%s.%s' % (args.contest, str(chr(ord('A') + index)), template_suffix)])
+        call(['cp', '-u', template_file, '%s/%s.%s' % (args.contest, str(chr(ord('A') + index)), template_suffix)])
     print("Successfully generate templates")
 
 def GenerateSampleTests(problem_count, args):
