@@ -1,0 +1,18 @@
+{
+    "c++17": {
+        "name": "main.cc", 
+        "suffix": "cc"
+    }, 
+    "java": {
+        "name": "Main.java", 
+        "suffix": "java"
+    },
+    "python2": {
+        "name": "main2.py", 
+        "suffix": "py"
+    },
+    "python3": {
+        "name": "main3.py", 
+        "suffix": "py"
+    }
+}

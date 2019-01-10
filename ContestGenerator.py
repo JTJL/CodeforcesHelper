@@ -25,12 +25,16 @@ def GetResp(url, headers=None, params=None):
     except:
         print('Get Unknown Http Error')
 
-def GenerateTemplate(problem_count, args):
+def LoadConfig():
+    with open('template/template_config.json') as config_file:
+        return json.loads(config_file.read())
+
+def GenerateTemplate(problem_count, config, args):
     template_file = None
     template_suffix = None
-    if args.language == 'c++17':
-        template_file = 'template/template_cpp17.cc'
-        template_suffix = 'cc'
+    if args.language in config:
+        template_file = 'template/' + str(config[args.language]['name'])
+        template_suffix = str(config[args.language]['suffix'])
     else:
         print('Unsupported language')
         return 
@@ -75,7 +79,7 @@ def Generate(args):
     problem_count = str(soup.find(class_="problems")).count('submit') // 2
     print('Totally %d problems found in contest %s' % (problem_count, args.contest))
     call(['mkdir', '-p', args.contest])
-    GenerateTemplate(problem_count, args)
+    GenerateTemplate(problem_count, LoadConfig(), args)
     GenerateSampleTests(problem_count, args)
 
 def PrintVersion():
