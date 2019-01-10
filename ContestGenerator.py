@@ -26,14 +26,14 @@ def GetResp(url, headers=None, params=None):
         print('Get Unknown Http Error')
 
 def LoadConfig():
-    with open('template/template_config.json') as config_file:
+    with open('template/template_config.json', 'r') as config_file:
         return json.loads(config_file.read())
 
 def GenerateTemplate(problem_count, config, args):
     template_file = None
     template_suffix = None
     if args.language in config:
-        template_file = 'template/' + str(config[args.language]['name'])
+        template_file = 'template/%s' % (str(config[args.language]['name']))
         template_suffix = str(config[args.language]['suffix'])
     else:
         print('Unsupported language')
@@ -50,15 +50,16 @@ def ParseTests(s):
         s = s + '\n'
     return s
 
-def GenerateSampleTests(problem_count, args):
+def GenerateSampleTests(problem_count, contest_info, args):
     for index in range(problem_count):
-        problem_url = "https://codeforces.com/contest/%s/problem/%s" % (args.contest, str(chr(ord('A') + index)))
+        problem_url = 'https://codeforces.com/contest/%s/problem/%s' % (args.contest, str(chr(ord('A') + index)))
         problem = GetResp(problem_url)
         if problem == None:
-            print("Fail to fetch sample test of problem %s" % str(chr(ord('A') + index)))
+            print('Fail to fetch sample test of problem %s' % str(chr(ord('A') + index)))
             continue
         soup = BeautifulSoup(problem.text, 'html.parser')
         tests = soup.find(class_='sample-test').find_all('pre')
+        contest_info['tests'][str(chr(ord('A') + index))] = len(tests) // 2
         for u in range(0, len(tests), 2):
             input = ParseTests(tests[u])
             output = ParseTests(tests[u + 1])
@@ -68,10 +69,10 @@ def GenerateSampleTests(problem_count, args):
             output_file.write(output)
             input_file.close()
             output_file.close()
-        print("Successfully generate %d sample test(s) for problem %s" % (len(tests) / 2, str(chr(ord('A') + index))))
+        print('Successfully generate %d sample test(s) for problem %s' % (len(tests) / 2, str(chr(ord('A') + index))))
 
 def Generate(args):
-    dashboard_url = "https://codeforces.com/contest/%s" % (args.contest)
+    dashboard_url = 'https://codeforces.com/contest/%s' % (args.contest)
     dashboard = GetResp(dashboard_url)
     if dashboard == None:
         return
@@ -79,11 +80,14 @@ def Generate(args):
     problem_count = str(soup.find(class_="problems")).count('submit') // 2
     print('Totally %d problems found in contest %s' % (problem_count, args.contest))
     call(['mkdir', '-p', args.contest])
+    contest_info = {"problem" : problem_count, "tests": {} }
     GenerateTemplate(problem_count, LoadConfig(), args)
-    GenerateSampleTests(problem_count, args)
+    GenerateSampleTests(problem_count, contest_info, args)
+    with open('%s/.config' % (args.contest), 'w') as config:
+        config.write(json.dumps(contest_info, indent=True, sort_keys=True))
 
 def PrintVersion():
-    ver = open("version", "r")
+    ver = open('version', 'r')
     print(ver.read())
     ver.close()
 
@@ -91,8 +95,8 @@ if __name__ == '__main__':
     PrintVersion()
     parser = argparse.ArgumentParser(prog='Codeforces', description='Codeforces Helper')
 
-    parser.add_argument('--language', '-l', default="c++17", help='The programming language you want to use.')
-    parser.add_argument('--contest', '-c', help="The contest you want to play.")
+    parser.add_argument('--language', '-l', default='c++17', help='The programming language you want to use.')
+    parser.add_argument('--contest', '-c', help='The contest you want to play.')
     args = parser.parse_args()
 
     if args.contest == None:
