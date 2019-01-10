@@ -77,10 +77,10 @@ def Generate(args):
     if dashboard == None:
         return
     soup = BeautifulSoup(dashboard.text, 'html.parser')
-    problem_count = str(soup.find(class_="problems")).count('submit') // 2
+    problem_count = str(soup.find(class_='problems')).count('submit') // 2
     print('Totally %d problems found in contest %s' % (problem_count, args.contest))
     call(['mkdir', '-p', args.contest])
-    contest_info = {"problem" : problem_count, "tests": {} }
+    contest_info = {'problem' : problem_count, 'tests': {} }
     GenerateTemplate(problem_count, LoadConfig(), args)
     GenerateSampleTests(problem_count, contest_info, args)
     with open('%s/.config' % (args.contest), 'w') as config:
